@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#14223b">
+<title>My GCSEs — English and maths tracker</title>
+<style>
+:root{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17243c;background:#f2f5fa;font-size:16px;--accent:#087c99}
+*{box-sizing:border-box}body{margin:0}body[data-subject=language]{--accent:#a54809}body[data-subject=literature]{--accent:#6944ba}
+[hidden]{display:none!important}button,input,select{font:inherit}button,.file-button{cursor:pointer}button,input,select,.file-button{border-radius:8px}
+button,input,select{min-height:42px}input,select{border:1px solid #b9c4d4;background:white;color:#17243c;padding:9px 11px;min-width:0;max-width:100%}
+button{border:0;padding:10px 16px;background:var(--accent);color:white;font-weight:650}button:hover{filter:brightness(.94)}
+button:focus-visible,input:focus-visible,select:focus-visible,.file-button:focus-within{outline:3px solid #0f8cae;outline-offset:3px}
+input[type=checkbox]{width:20px;min-height:20px;accent-color:var(--accent);flex-shrink:0}label{display:grid;gap:7px;font-size:.875rem;font-weight:600}
+h1,h2,h3,p{margin-top:0}h1{font-size:2rem;letter-spacing:-.04em;margin-bottom:4px}h2{font-size:1.5rem;margin-bottom:0}h3{font-size:1.125rem;margin-bottom:16px}
+small{display:block;font-size:.875rem;font-weight:400;color:#5a6880;line-height:1.5}header{background:#14223b;color:white;border-bottom:4px solid #36c6e9}
+.wrap{max-width:1120px;margin:auto;padding:28px 24px}.top{display:flex;justify-content:space-between;gap:20px;align-items:center}.top p{color:#b9cae2;margin-bottom:0;font-size:.875rem}
+.tools{display:flex;gap:8px;flex-wrap:wrap}.tools button,.file-button{background:#263b5a;border:1px solid #536684;color:white;padding:10px 14px;font-weight:600;font-size:.875rem;min-height:42px;display:inline-flex;align-items:center}
+.file-button input{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;clip-path:inset(50%);min-height:0}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:24px}.stat{background:white;border:1px solid #dce3ed;border-radius:12px;padding:20px}
+.stat p{font-size:.875rem;color:#58677d;margin-bottom:10px}.stat strong{display:block;font-size:1.875rem;line-height:1.2;margin-bottom:8px;letter-spacing:-.04em}
+.subjects{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}.subjects button{background:#e4eaf3;color:#43536b;border:1px solid transparent}
+.subjects button[aria-pressed=true]{background:var(--accent);color:white}.subject-head{background:#14223b;color:white;border-radius:12px 12px 0 0;padding:24px;display:flex;justify-content:space-between;gap:24px;align-items:center}
+.subject-head p{color:#c0cde0;font-size:.875rem;margin-bottom:7px}.grade{text-align:right;max-width:50%}.grade strong{font-size:2.25rem;display:block;line-height:1.1}.grade small{color:#c0cde0;margin-top:6px}
+.settings{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;padding:20px 24px;background:white;border:1px solid #dce3ed;border-top:0;border-radius:0 0 12px 12px;margin-bottom:20px}
+.panels{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:20px;margin-bottom:20px}
+.card{background:white;border:1px solid #dce3ed;border-radius:12px;padding:24px;min-width:0}.card-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}.card-head h3{margin-bottom:8px}
+progress{height:8px;width:100%;accent-color:var(--accent);margin:6px 0 16px}.hint{font-size:.875rem;color:#5a6880;line-height:1.5}.topic{display:grid;grid-template-columns:minmax(0,1fr) 145px 32px;gap:10px;align-items:center;padding:12px 0;border-top:1px solid #edf0f5}
+.topic span{line-height:1.45;overflow-wrap:anywhere}.topic select{font-size:.875rem;padding:8px}.quiet{background:transparent;color:#68778c;min-height:40px;padding:0;font-size:1.5rem}
+.inline-form{display:flex;gap:10px;align-items:end;margin-top:18px}.inline-form label{flex:1;min-width:0}.inline-form input{width:100%}.task{display:flex;align-items:center;gap:10px;border-top:1px solid #edf0f5;padding:14px 0}
+.task label{display:flex;gap:12px;align-items:center;flex:1;font-size:1rem;font-weight:400;min-width:0}.task span{overflow-wrap:anywhere}.task .quiet{width:32px;flex-shrink:0}
+.task.complete span{color:#6b788b;text-decoration:line-through}.overdue{color:#b23c31}.empty{color:#69768a;background:#f5f7fb;border-radius:8px;padding:18px;line-height:1.5}
+.task-form{display:grid;gap:12px;margin-top:18px}.task-form .row{display:flex;gap:12px;align-items:end}.task-form .row label{flex:1;min-width:0}
+.result{display:grid;grid-template-columns:minmax(0,1fr) auto 32px;gap:16px;border-top:1px solid #edf0f5;padding:16px 0;align-items:center}.result strong{overflow-wrap:anywhere}.score{text-align:right}.result-form{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:18px;padding-top:18px;border-top:1px solid #dce3ed}
+.wide{grid-column:span 2}.result-form button{grid-column:1/-1;justify-self:start}footer{font-size:.875rem;color:#5a6880;line-height:1.6;padding:4px 0 24px}
+#notice{min-height:1.5em;margin:0 0 18px;color:#40526d;font-size:.875rem;line-height:1.5}
+@media(max-width:800px){.settings{grid-template-columns:repeat(2,minmax(0,1fr))}.panels{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.summary{gap:10px}.stat{padding:16px}}
+@media(max-width:480px){.wrap{padding:22px 16px}.summary{grid-template-columns:1fr}.stat{display:grid;grid-template-columns:1fr auto;gap:4px 10px}.stat p{margin:0}.stat strong{grid-column:2;grid-row:1/3;font-size:1.5rem;align-self:center;margin:0}.stat small{grid-column:1}
+.card,.subject-head{padding:18px}.settings{padding:18px;gap:12px}.subjects button{flex:1;font-size:.875rem;padding:10px}.subject-head{align-items:flex-start}.grade{max-width:45%}.topic{grid-template-columns:minmax(0,1fr) 32px}.topic select{grid-column:1;grid-row:2;width:100%}.topic .quiet{grid-column:2;grid-row:1/3}
+.result-form{grid-template-columns:repeat(2,minmax(0,1fr))}.result-form .wide{grid-column:1/-1}.result-form label[for=result-date]{grid-column:1/-1}.result{gap:8px}.score{font-size:.875rem}.inline-form button{padding:10px 12px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <div><h1>My GCSEs</h1><p>English &amp; maths</p></div>
+    <div class="tools">
+      <button id="export" type="button">Download backup</button>
+      <label class="file-button">Import backup
+        <input id="import" type="file" accept=".json,application/json">
+      </label>
+    </div>
+  </div>
+</header>
+<main class="wrap">
+  <p id="notice" role="status">Progress is saved in this browser. Download backups to keep a copy.</p>
+  <section class="summary" aria-label="Your progress">
+    <div class="stat"><p>Confident topics</p><strong id="confidence">0</strong><small>Across your subjects</small></div>
+    <div class="stat"><p>Revision tasks left</p><strong id="open-tasks">0</strong><small>One step at a time</small></div>
+    <div class="stat"><p>Next exam</p><strong id="countdown">No date set</strong><small id="next-exam">Add your confirmed exam date</small></div>
+  </section>
+  <nav class="subjects" aria-label="Choose a subject">
+    <button data-subject="maths" aria-pressed="true">Maths</button>
+    <button data-subject="language" aria-pressed="false">English Language</button>
+    <button data-subject="literature" aria-pressed="false">English Literature</button>
+  </nav>
+  <section aria-labelledby="subject-title">
+    <div class="subject-head">
+      <div><p>GCSE · Grades 9–1</p><h2 id="subject-title">Maths</h2></div>
+      <div class="grade"><p>Latest recorded grade</p><strong id="latest-grade">—</strong><small id="latest-label"></small></div>
+    </div>
+    <div class="settings">
+      <label>Target grade<select id="target"></select></label>
+      <label>Exam board<input id="board" maxlength="100" placeholder="e.g. AQA or Edexcel"></label>
+      <label id="tier-field">Maths tier<select id="tier"><option value="">Not set</option><option>Foundation</option><option>Higher</option></select></label>
+      <label>Next exam date<input id="exam" type="date"></label>
+    </div>
+    <div class="panels">
+      <section class="card" aria-labelledby="topics-title">
+        <div class="card-head"><h3 id="topics-title">Topic confidence</h3><small id="topic-count"></small></div>
+        <progress id="topic-progress" aria-label="Confident topics"></progress>
+        <p class="hint">Start with these general topics. Add topics or text titles from your exam board’s specification.</p>
+        <div id="topics"></div>
+        <form id="topic-form" class="inline-form">
+          <label>Add a topic<input id="topic-name" maxlength="120" required placeholder="Topic or set text"></label>
+          <button>Add</button>
+        </form>
+      </section>
+      <section class="card" aria-labelledby="tasks-title">
+        <h3 id="tasks-title">Revision tasks</h3>
+        <div id="tasks"></div>
+        <form id="task-form" class="task-form">
+          <label>What will you revise?<input id="task-title" maxlength="150" required placeholder="e.g. Practise five algebra questions"></label>
+          <div class="row">
+            <label>Due date (optional)<input id="task-due" type="date"></label>
+            <button>Add task</button>
+          </div>
+        </form>
+      </section>
+    </div>
+    <section class="card" aria-labelledby="results-title">
+      <h3 id="results-title">Tests &amp; mock results</h3>
+      <p class="hint">Enter grades awarded by your teacher. Percentages aren’t converted into GCSE grades.</p>
+      <div id="results"></div>
+      <form id="result-form" class="result-form">
+        <label class="wide">Assessment name<input id="result-title" maxlength="150" required placeholder="e.g. Autumn mock, Paper 1"></label>
+        <label for="result-date">Date<input id="result-date" type="date" required></label>
+        <label>Marks earned<input id="marks" type="number" min="0" step="any" required></label>
+        <label>Out of<input id="total" type="number" min="1" step="any" required></label>
+        <label>Grade (optional)<select id="result-grade"></select></label>
+        <button>Save result</button>
+      </form>
+    </section>
+  </section>
+  <footer><p>Saved on this device and browser, with no cross-device sync. Clearing browser data can remove your progress; keep a downloaded backup.</p></footer>
+</main>
+<script>
+'use strict';
+const KEY = 'gcse-tracker-v1';
+const names = { maths: 'Maths', language: 'English Language', literature: 'English Literature' };
+const topicNames = {
+  maths: ['Number', 'Algebra', 'Ratio and proportion', 'Geometry and measures', 'Probability', 'Statistics'],
+  language: ['Reading comprehension', 'Language analysis', 'Structure', 'Comparison and evaluation', 'Creative writing', 'Transactional writing', 'Spelling, punctuation and grammar'],
+  literature: ['Shakespeare text', '19th-century novel', 'Modern prose or drama', 'Anthology poetry', 'Unseen poetry', 'Essay technique', 'Quotation recall']
+};
+const stages = ['Not started', 'Learning', 'Practising', 'Confident'];
+const esc = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+const uid = () => globalThis.crypto?.randomUUID?.() || Date.now().toString(36) + Math.random().toString(36).slice(2);
+const today = () => {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+};
+const validDate = d => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) && Number.isFinite(Date.parse(d)) && new Date(d).toISOString().slice(0,10) === d;
+const dateLabel = d => new Date(d + 'T12:00:00').toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+const daysUntil = d => Math.round((Date.parse(d) - Date.parse(today())) / 86400000);
+const blank = () => ({
+  version: 1,
+  subjects: Object.fromEntries(Object.keys(names).map(key => [key, {
+    target:'', board:'', tier:'', exam:'',
+    topics: topicNames[key].map(name => ({id:uid(), name, status:0}))
+  }])),
+  tasks: [], results: []
+});
+const isGrade = v => v === '' || v === 'U' || /^[1-9]$/.test(String(v));
+
+function validate(data) {
+  if (!data || data.version !== 1 || !data.subjects || !Array.isArray(data.tasks) || !Array.isArray(data.results)) throw Error('Unsupported backup.');
+  for (const key of Object.keys(names)) {
+    const s = data.subjects[key];
+    if (!s || !(s.target === '' || /^[1-9]$/.test(String(s.target))) ||
+      typeof s.board !== 'string' || s.board.length > 100 ||
+      !['','Foundation','Higher'].includes(s.tier) ||
+      (s.exam !== '' && !validDate(s.exam)) ||
+      !Array.isArray(s.topics) || s.topics.length > 200) throw Error('Invalid subject settings.');
+    const ids = new Set();
+    for (const t of s.topics) {
+      if (!t || typeof t.id !== 'string' || t.id.length > 100 || ids.has(t.id) ||
+        typeof t.name !== 'string' || !t.name.trim() || t.name.length > 120 ||
+        !Number.isInteger(t.status) || t.status < 0 || t.status > 3) throw Error('Invalid topic.');
+      ids.add(t.id);
+    }
+  }
+  for (const list of [data.tasks, data.results]) {
+    if (list.length > 2000) throw Error('Backup has too many records.');
+    const ids = new Set();
+    for (const r of list) {
+      if (!r || typeof r.id !== 'string' || r.id.length > 100 || ids.has(r.id) ||
+        !Object.hasOwn(names,r.subject) || typeof r.title !== 'string' ||
+        !r.title.trim() || r.title.length > 150) throw Error('Invalid record.');
+      ids.add(r.id);
+      if (list === data.tasks) {
+        if (typeof r.done !== 'boolean' || (r.due !== '' && !validDate(r.due))) throw Error('Invalid task.');
+      } else {
+        if (!validDate(r.date) || r.date > today() || !isGrade(r.grade) ||
+          !Number.isFinite(r.marks) || !Number.isFinite(r.total) ||
+          r.total <= 0 || r.marks < 0 || r.marks > r.total) throw Error('Invalid result.');
+      }
+    }
+  }
+  return data;
+}
+
+let data = blank(), active = 'maths', blocked = false;
+function notify(message) { document.getElementById('notice').textContent = message; }
+try {
+  const raw = localStorage.getItem(KEY);
+  if (raw) data = validate(JSON.parse(raw));
+} catch {
+  blocked = true;
+  notify('Saved data could not be loaded. Your existing data has been preserved. Import a backup to restore it; you can download any new changes.');
+}
+function save() {
+  if (blocked) { notify('Automatic saving is unavailable. Download a backup to keep these changes.'); return; }
+  try { localStorage.setItem(KEY, JSON.stringify(data)); notify('Saved in this browser.'); }
+  catch { notify('Your browser could not save these changes. Download a backup to keep them.'); }
+}
+function gradeOptions(value, includeU) {
+  return '<option value="">Not set</option>' +
+    (includeU ? '<option value="U"' + (value === 'U' ? ' selected' : '') + '>U</option>' : '') +
+    Array.from({length:9}, (_,i) => '<option value="' + (i+1) + '"' +
+      (String(value) === String(i+1) ? ' selected' : '') + '>' + (i+1) + '</option>').join('');
+}
+function sortedResults(subject) {
+  return data.results.filter(r => r.subject === subject).sort((a,b) =>
+    b.date.localeCompare(a.date) || data.results.indexOf(b) - data.results.indexOf(a));
+}
+function renderSummary() {
+  const all = Object.values(data.subjects).flatMap(s => s.topics);
+  document.getElementById('confidence').textContent = all.filter(t => t.status === 3).length + ' / ' + all.length;
+  document.getElementById('open-tasks').textContent = data.tasks.filter(t => !t.done).length;
+  const exams = Object.entries(data.subjects)
+    .filter(([,s]) => s.exam && daysUntil(s.exam) >= 0)
+    .sort((a,b) => a[1].exam.localeCompare(b[1].exam));
+  document.getElementById('countdown').textContent = exams.length ?
+    (daysUntil(exams[0][1].exam) === 0 ? 'Today' : daysUntil(exams[0][1].exam) + ' days') : 'No date set';
+  document.getElementById('next-exam').textContent = exams.length ?
+    names[exams[0][0]] + ' · ' + dateLabel(exams[0][1].exam) : 'Add your confirmed exam date';
+  const latest = sortedResults(active).find(r => r.grade !== '');
+  document.getElementById('latest-grade').textContent = latest ? latest.grade : '—';
+  document.getElementById('latest-label').textContent = latest ?
+    latest.title + ' · ' + dateLabel(latest.date) : 'Add a teacher-awarded grade below';
+  const topics = data.subjects[active].topics;
+  const ready = topics.filter(t => t.status === 3).length;
+  document.getElementById('topic-count').textContent = ready + ' of ' + topics.length + ' confident';
+  const p = document.getElementById('topic-progress');
+  p.max = topics.length || 1; p.value = ready;
+}
+function renderTopics() {
+  const topics = data.subjects[active].topics;
+  document.getElementById('topics').innerHTML = topics.length ? topics.map(t =>
+    '<div class="topic"><span>' + esc(t.name) + '</span><select data-topic="' + esc(t.id) +
+    '" aria-label="Confidence for ' + esc(t.name) + '">' +
+    stages.map((label,i) => '<option value="' + i + '"' + (t.status === i ? ' selected' : '') + '>' + label + '</option>').join('') +
+    '</select><button class="quiet" data-remove-topic="' + esc(t.id) +
+    '" aria-label="Remove ' + esc(t.name) + '">×</button></div>'
+  ).join('') : '<p class="empty">Add the topics on your specification.</p>';
+}
+function renderTasks() {
+  const tasks = data.tasks.filter(t => t.subject === active).sort((a,b) =>
+    Number(a.done)-Number(b.done) || (a.due || '9999').localeCompare(b.due || '9999'));
+  document.getElementById('tasks').innerHTML = tasks.length ? tasks.map(t =>
+    '<div class="task ' + (t.done ? 'complete' : '') + '"><label><input type="checkbox" data-task="' +
+    esc(t.id) + '"' + (t.done ? ' checked' : '') + '><span>' + esc(t.title) +
+    (t.due ? '<small class="' + (!t.done && t.due < today() ? 'overdue' : '') + '">' +
+    (t.due < today() && !t.done ? 'Overdue · ' : 'Due · ') + dateLabel(t.due) + '</small>' : '') +
+    '</span></label><button class="quiet" data-remove-task="' + esc(t.id) +
+    '" aria-label="Delete ' + esc(t.title) + '">×</button></div>'
+  ).join('') : '<p class="empty">Plan your first revision task below.</p>';
+}
+function renderResults() {
+  const results = sortedResults(active);
+  document.getElementById('results').innerHTML = results.length ? results.map(r =>
+    '<div class="result"><div><strong>' + esc(r.title) + '</strong><small>' + dateLabel(r.date) +
+    '</small></div><div class="score">' + r.marks + ' / ' + r.total + '<small>' +
+    Math.round(r.marks / r.total * 100) + '% · ' +
+    (r.grade === '' ? 'Grade not entered' : 'Grade ' + esc(r.grade)) +
+    '</small></div><button class="quiet" data-remove-result="' + esc(r.id) +
+    '" aria-label="Delete ' + esc(r.title) + '">×</button></div>'
+  ).join('') : '<p class="empty">Your test and mock results will appear here.</p>';
+}
+function render() {
+  const s = data.subjects[active];
+  document.body.dataset.subject = active;
+  document.querySelectorAll('[data-subject]').forEach(b =>
+    b.setAttribute('aria-pressed', String(b.dataset.subject === active)));
+  document.getElementById('subject-title').textContent = names[active];
+  document.getElementById('target').innerHTML = gradeOptions(s.target, false);
+  document.getElementById('board').value = s.board;
+  document.getElementById('exam').value = s.exam;
+  document.getElementById('tier').value = s.tier;
+  document.getElementById('tier-field').hidden = active !== 'maths';
+  document.getElementById('result-grade').innerHTML = gradeOptions('', true);
+  document.getElementById('result-date').value = today();
+  document.getElementById('result-date').max = today();
+  renderTopics(); renderTasks(); renderResults(); renderSummary();
+}
+document.querySelectorAll('[data-subject]').forEach(b => b.addEventListener('click', () => {
+  active = b.dataset.subject;
+  document.querySelectorAll('form').forEach(f => f.reset());
+  render();
+}));
+for (const field of ['target','board','exam','tier']) {
+  document.getElementById(field).addEventListener('change', e => {
+    const value = e.target.value;
+    if (field === 'exam' && value && !validDate(value)) { notify('Enter a valid exam date.'); return; }
+    data.subjects[active][field] = value; save(); renderSummary();
+  });
+}
+document.getElementById('topics').addEventListener('change', e => {
+  const topic = data.subjects[active].topics.find(t => t.id === e.target.dataset.topic);
+  if (topic) { topic.status = Number(e.target.value); save(); renderSummary(); }
+});
+document.getElementById('tasks').addEventListener('change', e => {
+  const task = data.tasks.find(t => t.id === e.target.dataset.task);
+  if (task) { task.done = e.target.checked; save(); renderTasks(); renderSummary(); }
+});
+document.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if (!b) return;
+  if (b.dataset.removeTopic && confirm('Remove this topic and its confidence rating?')) {
+    data.subjects[active].topics = data.subjects[active].topics.filter(t => t.id !== b.dataset.removeTopic);
+    save(); renderTopics(); renderSummary();
+  }
+  if (b.dataset.removeTask && confirm('Delete this revision task?')) {
+    data.tasks = data.tasks.filter(t => t.id !== b.dataset.removeTask);
+    save(); renderTasks(); renderSummary();
+  }
+  if (b.dataset.removeResult && confirm('Delete this assessment result?')) {
+    data.results = data.results.filter(r => r.id !== b.dataset.removeResult);
+    save(); renderResults(); renderSummary();
+  }
+});
+document.getElementById('topic-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const input = document.getElementById('topic-name'), name = input.value.trim();
+  if (!name) return;
+  if (data.subjects[active].topics.length >= 200) {
+    notify('You can keep up to 200 topics per subject.'); return;
+  }
+  data.subjects[active].topics.push({id:uid(), name, status:0});
+  input.value = ''; save(); renderTopics(); renderSummary(); input.focus();
+});
+document.getElementById('task-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const title = document.getElementById('task-title').value.trim();
+  const due = document.getElementById('task-due').value;
+  if (!title || (due && !validDate(due))) return;
+  if (data.tasks.length >= 2000) {
+    notify('Task limit reached. Delete older tasks before adding more.'); return;
+  }
+  data.tasks.push({id:uid(), subject:active, title, due, done:false});
+  e.target.reset(); save(); renderTasks(); renderSummary();
+});
+document.getElementById('result-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const title = document.getElementById('result-title').value.trim();
+  const date = document.getElementById('result-date').value;
+  const marks = Number(document.getElementById('marks').value);
+  const total = Number(document.getElementById('total').value);
+  const grade = document.getElementById('result-grade').value;
+  if (!title || !validDate(date) || date > today() ||
+    !Number.isFinite(marks) || !Number.isFinite(total) ||
+    total <= 0 || marks < 0 || marks > total) {
+    notify('Check the date and marks. Marks must be between zero and the total.'); return;
+  }
+  if (data.results.length >= 2000) {
+    notify('Result limit reached. Download a backup before deleting older results.'); return;
+  }
+  data.results.push({id:uid(), subject:active, title, date, marks, total, grade});
+  e.target.reset(); document.getElementById('result-date').value = today();
+  save(); renderResults(); renderSummary();
+});
+document.getElementById('export').addEventListener('click', () => {
+  const url = URL.createObjectURL(new Blob([JSON.stringify(data,null,2)], {type:'application/json'}));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'my-gcse-backup-' + today() + '.json'; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  notify('Backup downloaded. Keep it somewhere safe.');
+});
+document.getElementById('import').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    if (file.size > 2 * 1024 * 1024) throw Error('Backup must be under 2 MB.');
+    const incoming = validate(JSON.parse(await file.text()));
+    if (!confirm('Replace the current tracker with this backup? Download your current backup first if you need it.')) return;
+    data = incoming; blocked = false; save(); render();
+  } catch (error) {
+    notify('Could not import the backup: ' + error.message);
+  } finally {
+    e.target.value = '';
+  }
+});
+render();
+</script>
+</body>
+</html>
